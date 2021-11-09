@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ino.web.freeBoard.mapper.FreeBoardMapper">
+
+
+	<select id="freeBoardGetList" resultType="freeBoardDto" parameterType="map"> <!-- resultType="ino.web.board.dto.BoardDto" -->
+
+		SELECT DECODE(CODE_TYPE, '01','자유','02','익명','QNA')as codeType , NUM, NAME, TITLE, CONTENT, TO_CHAR(REGDATE , 'YYYY/MM/DD') AS REGDATE, x.rnum
+		FROM (SELECT a.*,ROWNUM as rnum
+				FROM (SELECT * 
+						FROM FREEBOARD
+							ORDER BY NUM DESC) a
+				WHERE ROWNUM between 1 and #{totalCount}
+				
+			
+		<if test="result eq '1'.toString()">
+			AND CODE_TYPE = #{codeType}
+			
+		
+		</if>
+		<if test="result eq '2'.toString()">
+			AND num  = #{text}
+		</if>
+		<if test="result eq '3'.toString()">
+			AND title LIKE '%'||#{text}||'%'
+			
+		</if>
+		<if test="result eq '4'.toString()">
+			AND content LIKE '%'||#{text}||'%'
+			
+		</if>
+		<if test="result eq '5'.toString()">
+			AND name LIKE '%'||#{text}||'%'
+			
+		</if>
+		<if test="result eq '6'.toString()">
+			AND TO_CHAR(REGDATE , 'YYYYMMDD')
+			BETWEEN #{text}
+			AND #{text2}
+			
+		</if>
+		)x
+		WHERE x.rnum between ((#{page} -1 ) * #{limit}) + 1 and (#{page} * #{limit})
+				
+	</select >
+		
+	<select id="totalCount" resultType="int">
+	SELECT COUNT(*)
+		FROM FREEBOARD
+		
+		<if test="result eq '1'.toString()">
+			WHERE CODE_TYPE = #{codeType}
+		</if>
+		<if test="result eq '2'.toString()">
+			WHERE num  = #{text}
+		</if>
+		<if test="result eq '3'.toString()">
+			 WHERE title LIKE '%'||#{text}||'%'
+		</if>
+		<if test="result eq '4'.toString()">
+			WHERE content LIKE '%'||#{text}||'%'
+		</if>
+		<if test="result eq '5'.toString()">
+			WHERE name LIKE '%'||#{text}||'%'
+		</if>
+		<if test="result eq '6'.toString()">
+			WHERE TO_CHAR(REGDATE , 'YYYYMMDD')
+			BETWEEN #{text}
+			AND #{text2}
+		</if>
+		ORDER BY num
+	
+	</select>
+	<insert id="freeBoardInsertPro" parameterType="freeBoardDto">
+		INSERT INTO FREEBOARD(NUM, CODE_TYPE ,TITLE, NAME, REGDATE, CONTENT)
+		VALUES(board_seq.NEXTVAL, #{codeType} ,#{title}, #{name}, SYSDATE, #{content})
+	</insert>
+
+	<select id="freeBoardDetailByNum" resultType="freeBoardDto" parameterType="int">
+		SELECT decode(CODE_TYPE, '01','자유','02','익명','QNA')as codeType , NUM, TITLE, NAME, TO_CHAR(REGDATE,'YYYY/MM/DD') REGDATE, CONTENT FROM FREEBOARD
+		WHERE NUM=#{num}
+	</select>
+
+	<select id="freeBoardNewNum" resultType="int">
+		SELECT MAX(NUM)
+		FROM FREEBOARD
+	</select>
+
+	<update id="freeBoardModify" parameterType="freeBoardDto">
+		UPDATE FREEBOARD
+		SET TITLE = #{title}
+				, CONTENT = #{content},
+				CODE_TYPE = #{codeType} 
+		WHERE NUM = #{num}
+
+	</update>
+
+	<update id="freeBoardDelete" parameterType="int">
+		DELETE FROM FREEBOARD
+		WHERE NUM
+		= #{num}
+
+	</update>
+
+	<delete id="freeBoardCheckDelete">
+		DELETE FROM FREEBOARD
+		WHERE NUM IN
+		<foreach collection="list" item ="num" open="(" separator="," close=")">
+			#{num}
+		</foreach>
+		
+	</delete>
+	
+	
+</mapper>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ino.web.commonCode.mapper">
+	
+	<select id="selectCommonCodeList" resultType="java.util.HashMap">
+		
+		SELECT M.GR_CODE,GR_NAME,D.CODE,D.CODE_NAME,D.USE_YN
+		  FROM CODEM M , CODED D
+		  WHERE M.GR_CODE = D.GR_CODE
+		
+	</select>
+	
+		<select id="selectCommonGrCodeList" resultType="java.util.HashMap">
+		
+		SELECT M.GR_CODE,GR_NAME
+		  FROM CODEM M
+		
+	</select>
+</mapper>
