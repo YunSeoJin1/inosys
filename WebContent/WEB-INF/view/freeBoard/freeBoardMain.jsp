@@ -16,12 +16,20 @@
 	<div id="search">
 		<select id="selectBox" onChange="change_Menu()">
 			<option value="0" selected="selected">전체</option>
-			<option value="1">글타입</option> <!-- selectBox -->
-			<option value="2">글번호</option> <!-- input type text 대신 검색버튼클릭시 숫자체크 -->
-			<option value="3">글제목</option>  <!-- input type text -->
-			<option value="4">글내용</option> <!-- input type text -->
-			<option value="5">글쓴이</option> <!-- input type text -->
-			<option value="6">기간</option><!-- input type text - input type text 대신 검색버튼클릭시 숫자체크  자리수 체크 8자리 20210101-->
+			<c:forEach var="dto" items="${code_list}">
+				<c:if test="${dto.GR_CODE == 'GR002'}">
+					<option value="${dto.CODE}">
+						${dto.CODE_NAME}
+					</option>
+				</c:if>
+			</c:forEach>
+			<!-- <option value="1">글타입</option>  selectBox 
+			<option value="2">글번호</option>  input type text 대신 검색버튼클릭시 숫자체크
+			<option value="3">글제목</option>  input type text 
+			<option value="4">글내용</option> input type text
+			<option value="5">글쓴이</option> input type text 
+			<option value="6">기간</option>input type text - input type text 대신 검색버튼클릭시 숫자체크  자리수 체크 8자리 20210101
+			 -->
 		</select>
 		<div id="search_menu">
 			<input type='button' id='search_btn' value='검색' onClick='btn_click()'>
@@ -184,9 +192,13 @@ function change_Menu(){
 	else if(input == '1'){
 		html += "<div id='search_menu' name='search_menu'>";
 		html += "<select id='type'>";
-		html += "<option value='01' selected='selected'>자유</option>";
-		html += "<option value='02'>익명</option>";
-		html += "<option value='03'>QNA</option>";
+		html +=	"<c:forEach var='dto' items='${code_list}'>";
+		html +=		"<c:if test='${dto.GR_CODE == 'GR002'}'>";
+		html +=			"<option value='${dto.CODE}'>";
+		html +=				"${dto.CODE_NAME}";
+		html +=			"</option>";
+		html +=		"</c:if>";
+		html +=	"</c:forEach>";
 		html += "</select>";
 		html += "<input type='button' id='search_btn' value='검색' onClick='btn_click()'>";
 		html += "</div>";

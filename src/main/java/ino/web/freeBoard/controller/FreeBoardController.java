@@ -1,5 +1,6 @@
 package ino.web.freeBoard.controller;
 
+import ino.web.commonCode.service.CommCodeService;
 import ino.web.freeBoard.dto.FreeBoardDto;
 import ino.web.freeBoard.service.FreeBoardService;
 
@@ -21,6 +22,9 @@ public class FreeBoardController {
 
 	@Autowired
 	private FreeBoardService freeBoardService;
+	
+	@Autowired
+	private CommCodeService commCodeService;
 
 	@RequestMapping("/main.ino")
 	public ModelAndView main(HttpServletRequest request,Map<String, Object> data){
@@ -74,6 +78,10 @@ public class FreeBoardController {
 		List<FreeBoardDto> list = freeBoardService.freeBoardList(data);
 		
 		mav.addObject("freeBoardList",list);
+		
+		List<HashMap<String,Object>> code_list = commCodeService.selectCommonCodeList();
+		System.out.println("코드리스트 : "+code_list);
+		mav.addObject("code_list", code_list);
 		return mav;
 	}
 	
